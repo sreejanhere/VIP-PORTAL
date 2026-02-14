@@ -6,17 +6,18 @@
     <title>SECURE SYSTEM | LUXURY ACCESS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Montserrat:wght@300;400;500;600&family=Dancing+Script:wght@700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
+
     <style>
         /* --- CORE VARIABLES --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            /* Hacker UI Colors */
             --hacker-green: #00FF41;
             --black: #050505;
             --terminal-bg: rgba(10, 10, 10, 0.95);
-            
-            /* Luxury Card Colors */
             --gold-primary: #D4AF37;
             --gold-light: #F2D06B;
             --gold-shadow: #AA8822;
@@ -79,39 +80,36 @@
 
         .error-message { color: #ff3333; margin-top: 15px; min-height: 20px; }
 
-        /* --- ANIMATION --- */
-        .boy-animation-container {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #000; z-index: 100;
-        }
-        .boy-running {
-            position: absolute; bottom: 20%; left: -200px; width: 150px; height: 200px;
-            animation: runIn 2.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-        }
-        @keyframes runIn { 0% { left: -200px; transform: scale(0.8) skewX(10deg); } 100% { left: 35%; transform: scale(1) skewX(0deg); } }
-        
-        /* --- LUXURY CARD DESIGN --- */
+        /* --- LUXURY CARD & FLOATING DESIGN --- */
         .profile-container { display: none; width: 100%; position: relative; margin-top: 20px; perspective: 1500px; z-index: 20; }
 
-        .access-card {
+        .card-float-wrapper {
+            position: relative;
             width: 850px;
+            margin: 0 auto;
+            animation: paperFloat 6s ease-in-out infinite;
+            z-index: 10;
+        }
+
+        @keyframes paperFloat {
+            0% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-15px) rotate(1deg); }
+            66% { transform: translateY(-5px) rotate(-1deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        .access-card {
+            width: 100%;
             min-height: 400px;
             height: auto;
-            margin: 0 auto;
-            /* BLACK SATIN BACKGROUND */
             background: radial-gradient(circle at 100% 0%, #333333 0%, #111111 30%, #000000 100%);
             border-radius: 25px;
-            /* GOLD BORDER GLOW */
-            box-shadow: 
-                0 20px 60px rgba(0,0,0,0.9),
-                0 0 0 2px #222,
-                inset 0 0 0 1px rgba(212, 175, 55, 0.3);
-            display: flex;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid #333;
-            transform-style: preserve-3d;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.9), 0 0 0 2px #222, inset 0 0 0 1px rgba(212, 175, 55, 0.3);
+            display: flex; position: relative; overflow: hidden;
+            border: 1px solid #333; transform-style: preserve-3d;
+            transform: perspective(1000px);
             animation: cardEntrance 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            z-index: 5; 
         }
 
         @keyframes cardEntrance { 
@@ -119,115 +117,104 @@
             100% { transform: rotateX(0deg) translateY(0); opacity: 1; } 
         }
 
-        /* Gold Dust Splatter Effect */
+        /* --- LOCAL CAT ANIMATIONS --- */
+        .cat-sitting {
+            position: absolute;
+            top: -165px; /* Adjust this slightly if your chosen cat floats too high or low */
+            left: 20px;
+            width: 110px; /* Adjust width to fit your cat image */
+            height: auto;
+            z-index: 10; 
+            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.8));
+        }
+        .cat-sitting img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .cat-peeping {
+            position: absolute;
+            top: 40%;
+            right: -80px; /* Hidden slightly behind the edge */
+            width: 200px;
+            font-size: 4rem; /* For emoji fallback */
+            z-index: 1; /* BEHIND the card */
+            animation: peepCat 8s infinite ease-in-out;
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.8));
+        }
+        .cat-peeping img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        @keyframes peepCat {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            15%, 35% { transform: translate(50px, -20px) rotate(25deg); } 
+            45%, 65% { transform: translate(50px, 10px) rotate(10deg); }  
+            75%, 85% { transform: translate(10px, 0px) rotate(0deg); }    
+        }
+
+        /* 3D POP OUT ELEMENTS */
+        .card-photo-frame, .card-name, .chip-sim { transform: translateZ(40px); }
+        .card-invite-text { transform: translateZ(20px); }
+
         .gold-dust {
             position: absolute; top: -50px; right: -50px; width: 300px; height: 300px;
-            background-image: 
-                radial-gradient(var(--gold-primary) 1px, transparent 1px),
-                radial-gradient(var(--gold-light) 1px, transparent 1px);
-            background-size: 20px 20px;
-            background-position: 0 0, 10px 10px;
-            opacity: 0.4;
-            transform: rotate(45deg);
-            z-index: 0;
+            background-image: radial-gradient(var(--gold-primary) 1px, transparent 1px), radial-gradient(var(--gold-light) 1px, transparent 1px);
+            background-size: 20px 20px; background-position: 0 0, 10px 10px;
+            opacity: 0.4; transform: rotate(45deg) translateZ(0); z-index: 0;
             mask-image: radial-gradient(circle, black 30%, transparent 70%);
         }
         .gold-splash {
             position: absolute; top: -20px; right: -20px; width: 150px; height: 150px;
             background: radial-gradient(circle at center, rgba(212, 175, 55, 0.2) 0%, transparent 70%);
-            filter: blur(20px);
-            z-index: 0;
+            filter: blur(20px); z-index: 0;
         }
 
-        /* Left Side */
         .card-left {
-            flex: 0 0 32%;
-            position: relative;
-            z-index: 2;
-            padding: 30px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            /* Subtle divider */
+            flex: 0 0 32%; position: relative; z-index: 2; padding: 30px 20px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
             border-right: 1px solid rgba(212, 175, 55, 0.2);
             background: linear-gradient(to right, rgba(0,0,0,0.4), transparent);
         }
+        .card-right { flex: 1; padding: 40px; position: relative; z-index: 2; display: flex; flex-direction: column; justify-content: center; }
 
-        /* Right Side */
-        .card-right {
-            flex: 1;
-            padding: 40px;
-            position: relative;
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        /* GOLD CHIP */
         .chip-sim {
             position: absolute; top: 30px; left: 30px; width: 50px; height: 38px;
             background: linear-gradient(135deg, #b8860b 0%, #f2d06b 50%, #b8860b 100%);
-            border-radius: 6px;
-            box-shadow: inset 0 0 0 1px rgba(0,0,0,0.2);
-            z-index: 5;
-            display: flex; flex-wrap: wrap; align-content: center; justify-content: center;
-            gap: 2px;
+            border-radius: 6px; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.2); z-index: 5;
+            display: flex; flex-wrap: wrap; align-content: center; justify-content: center; gap: 2px;
         }
         .chip-line { width: 90%; height: 1px; background: rgba(0,0,0,0.3); margin: 2px 0; }
 
-        /* Photo Frame */
         .card-photo-frame {
-            width: 140px; height: 140px; border-radius: 50%;
-            padding: 3px;
-            /* Gold Gradient Border */
+            width: 140px; height: 140px; border-radius: 50%; padding: 3px;
             background: linear-gradient(135deg, var(--gold-primary), var(--gold-light), var(--gold-primary));
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-            margin: 20px 0 15px 0;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5); margin: 20px 0 15px 0;
         }
         .card-photo { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; filter: contrast(1.1) grayscale(0.2); background: #000;}
 
-        /* Typography */
         .card-name {
-            font-family: 'Cinzel', serif; /* Luxury Font */
-            font-size: 1.6rem;
-            color: var(--gold-primary);
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 8px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            font-family: 'Cinzel', serif; font-size: 1.6rem; color: var(--gold-primary); text-align: center;
+            text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; text-shadow: 0 2px 4px rgba(0,0,0,0.8);
         }
         .card-role {
-            font-family: 'Share Tech Mono'; font-size: 1rem; 
-            color: #000;
+            font-family: 'Share Tech Mono'; font-size: 1rem; color: #000;
             background: linear-gradient(90deg, var(--gold-primary), var(--gold-light));
-            padding: 4px 12px; border-radius: 4px;
-            font-weight: bold; letter-spacing: 1px;
+            padding: 4px 12px; border-radius: 4px; font-weight: bold; letter-spacing: 1px;
             box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
         }
-
         .card-invite-text {
-            font-family: 'Playfair Display', serif; 
-            color: var(--card-text); 
-            font-size: 1.2rem;
-            line-height: 1.6;
-            margin-bottom: 30px;
+            font-family: 'Playfair Display', serif; color: var(--card-text); font-size: 1.2rem;
+            line-height: 1.6; margin-bottom: 30px;
         }
-        .highlight { 
-            color: var(--gold-primary); 
-            font-weight: 700; 
-            font-style: italic; 
-            text-decoration: underline decoration-1px;
-        }
+        .highlight { color: var(--gold-primary); font-weight: 700; font-style: italic; text-decoration: underline decoration-1px; }
 
-        /* Details Grid */
         .card-details-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
-            padding: 15px 0;
-            border-top: 1px solid rgba(212, 175, 55, 0.2);
-            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px 0;
+            border-top: 1px solid rgba(212, 175, 55, 0.2); border-bottom: 1px solid rgba(212, 175, 55, 0.2);
         }
         .cd-item { font-family: 'Montserrat', sans-serif; font-size: 0.9rem; color: #ccc; display: flex; align-items: center; }
         .cd-item i { color: var(--gold-primary); margin-right: 10px; width: 20px; text-align: center; }
@@ -238,33 +225,92 @@
             opacity: 0.6; text-align: right;
         }
 
-        /* Buttons */
         .action-bar { margin-top: 20px; text-align: center; }
         .save-btn {
             background: transparent; border: 2px solid var(--gold-primary); color: var(--gold-primary);
             width: 70px; height: 70px; border-radius: 50%; font-size: 1.5rem; cursor: pointer;
             display: flex; align-items: center; justify-content: center; margin: 0 auto;
-            transition: 0.3s; box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+            transition: 0.3s; box-shadow: 0 0 15px rgba(212, 175, 55, 0.1); position: relative; z-index: 101;
         }
         .save-btn:hover { background: var(--gold-primary); color: #000; box-shadow: 0 0 30px rgba(212, 175, 55, 0.6); }
+        .close-btn { position: absolute; top: -50px; right: 0; color: #fff; background: none; border: none; font-size: 1.5rem; cursor: pointer; z-index: 101; }
 
-        .close-btn {
-            position: absolute; top: -50px; right: 0; color: #fff; background: none; border: none; font-size: 1.5rem; cursor: pointer;
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+        .shake-anim { animation: shake 0.5s; }
+
+        /* --- ARROW --- */
+        #arrowOverlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 100; overflow: visible;
+        }
+        
+        .draw-path-dotted {
+            stroke-dasharray: 4 12; 
+            stroke-dashoffset: 1500; 
+            animation: drawDots 2.5s ease-out forwards;
+            stroke-linecap: round;
+            stroke-width: 4;
+            stroke: #FFFFFF !important; 
+        }
+
+        @keyframes drawDots { to { stroke-dashoffset: 0; } }
+
+        /* --- BOUQUET OVERLAY --- */
+        #bouquetOverlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); z-index: 9999; backdrop-filter: blur(5px);
+            flex-direction: column; align-items: center; justify-content: center;
+        }
+        .bouquet-emoji { font-size: 10rem; filter: drop-shadow(0 0 30px rgba(255, 105, 180, 0.6)); }
+        .bouquet-animate { animation: popUpSway 4s ease-out forwards; }
+        .accept-text {
+            color: var(--gold-light); font-family: 'Playfair Display', serif; font-size: 2.5rem;
+            margin-top: 30px; letter-spacing: 2px; text-shadow: 0 0 15px rgba(212, 175, 55, 0.6); opacity: 0;
+        }
+        .accept-animate { animation: fadeInText 4s forwards; }
+
+        @keyframes popUpSway {
+            0% { transform: scale(0) translateY(200px) rotate(-20deg); opacity: 0; }
+            15% { transform: scale(1.2) translateY(-20px) rotate(10deg); opacity: 1; }
+            30% { transform: scale(1) translateY(0) rotate(-5deg); }
+            45% { transform: scale(1) translateY(0) rotate(5deg); }
+            60% { transform: scale(1) translateY(0) rotate(-2deg); }
+            80% { transform: scale(1) translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: scale(0.8) translateY(50px); opacity: 0; }
+        }
+        @keyframes fadeInText {
+            0% { opacity: 0; transform: translateY(20px); }
+            20% { opacity: 1; transform: translateY(0); }
+            80% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(10px); }
         }
 
         /* Responsive */
         @media (max-width: 900px) {
-            .access-card { width: 100%; max-width: 500px; flex-direction: column; }
+            .card-float-wrapper { width: 100%; max-width: 500px; }
+            .access-card { flex-direction: column; }
             .card-left { border-right: none; border-bottom: 1px solid rgba(212, 175, 55, 0.2); padding-bottom: 20px; }
             .chip-sim { top: 20px; left: 20px; }
             .gold-dust { opacity: 0.2; }
+            .bouquet-emoji { font-size: 7rem; }
+            .accept-text { font-size: 1.8rem; text-align: center; padding: 0 20px;}
+            .cat-sitting { left: 10px; width: 100px; top: -60px; }
+            .cat-peeping { font-size: 3.5rem; }
         }
     </style>
 </head>
 <body>
     <div class="matrix-bg" id="matrixBg"></div>
 
-    <div class="container">
+    <audio id="bgAudio" loop>
+        <source src="song.mp3" type="audio/mp3">
+    </audio>
+
+    <div class="container" id="mainContainer">
         <header>
             <div class="system-header">SECURE ACCESS</div>
         </header>
@@ -276,18 +322,30 @@
             <h4 style="color: var(--hacker-green); font-family: 'Orbitron'; margin-bottom: 20px;">
                 ACCESS CODE: COLLEGE ROLL 
             </h4>
-            <input type="text" id="accessCode" placeholder="ENTER ACCESS CODE" autocomplete="off"oninput="this.value = this.value.toUpperCase()">
+            <input type="text" id="accessCode" placeholder="ENTER ACCESS CODE" autocomplete="off" oninput="this.value = this.value.toUpperCase()">
             <button id="submitCode">VERIFY</button>
             <div class="error-message" id="errorMessage"></div>
         </section>
 
-        <div class="boy-animation-container" id="boyAnimationContainer">
-            <div class="boy-running"></div>
-        </div>
-
         <section class="profile-container" id="profileContainer">
             <button class="close-btn" id="closeProfile"><i class="fas fa-times"></i></button>
             
+            <svg id="arrowOverlay">
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#FFFFFF" />
+                    </marker>
+                    <filter id="glow">
+                        <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+                        <feMerge>
+                            <feMergeNode in="coloredBlur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+                <path id="arrowPath" d="" fill="none" stroke="#FFFFFF" marker-end="url(#arrowhead)" filter="url(#glow)"/>
+            </svg>
+
             <div id="cardMountPoint"></div>
 
             <div class="action-bar">
@@ -297,10 +355,15 @@
         </section>
     </div>
 
+    <div id="bouquetOverlay">
+        <div class="bouquet-emoji" id="flowerEmoji">💐</div>
+        <div class="accept-text" id="acceptText">Invitation Accepted!</div>
+    </div>
+
     <script>
         const guests = {
             "ECE/23/14": { name: "Sohima De", role: "MY MALKIN 👑", image: "sohi.jpeg", msg: " Hello <span class='highlight'>Love</span>, As my birthday approaches, there's no one I'd rather celebrate with than you. You bring so much joy and happiness into my life, and having you by my side on this special day would mean the world to me. You make ordinary moments extraordinary, and I know with you there, my birthday will be truly special. I've planned a cozy celebration with our close friends, and I really want you to join us. Your smile is what I'm looking forward to the most!"},
-            "ECE/23/17": { name: "Sourav Ghosh", role: "VIP-INSAAn", image: "SOURAV.jpg", msg: "Hey <span class='highlight'>Sourav</span>, What's up bro! Hope everything's fine </p><p>I'm throwing a birthday bash soon and it wouldn't be the same without you there. Celebrating this day with you would make it even more special.It's going to be a chill evening with good food, great music, and even better company. Wouldn't be the same without you, BADE-INSAAN"},
+            "ECE/23/17": { name: "Sourav Ghosh", role: "VIP-INSAAN", image: "SOURAV.jpg", msg: "Hey <span class='highlight'>Sourav</span>, What's up bro! Hope everything's fine </p><p>I'm throwing a birthday bash soon and it wouldn't be the same without you there. Celebrating this day with you would make it even more special.It's going to be a chill evening with good food, great music, and even better company. Wouldn't be the same without you, BADE-INSAAN"},
             "CSE/23/185": { name: "Arnabi Mandal", role: "VIP-ANAROBIA", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80", msg: "Hey <span class='highlight'>Arnabi</span>, I'm having a birthday get-together. It's going to be a fun evening with some food and company.Nothing too fancy, just a casual gathering with friends. I think it'll be a nice time and I hope you can make it."},
             "ME/23/12": { name: "Suchana Jana", role: "VIP-RAMEN", image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80", msg: "Hey <span class='highlight'>Maggie</span>, I'm planning a birthday celebration. It's going to be casual and low-key, just the way we like it. Hope you can make it and we can catch up properly!" }
         };
@@ -310,15 +373,19 @@
             btn: document.getElementById('submitCode'),
             error: document.getElementById('errorMessage'),
             terminal: document.querySelector('.terminal-section'),
-            anim: document.getElementById('boyAnimationContainer'),
             profile: document.getElementById('profileContainer'),
             mount: document.getElementById('cardMountPoint'),
             close: document.getElementById('closeProfile'),
             save: document.getElementById('tickButton'),
-            matrix: document.getElementById('matrixBg')
+            matrix: document.getElementById('matrixBg'),
+            audio: document.getElementById('bgAudio'),
+            arrowPath: document.getElementById('arrowPath'),
+            bouquetLayer: document.getElementById('bouquetOverlay'),
+            flowerEmoji: document.getElementById('flowerEmoji'),
+            acceptText: document.getElementById('acceptText'),
+            mainContainer: document.getElementById('mainContainer')
         };
 
-        // Matrix
         for(let i=0; i<30; i++) {
             let rain = document.createElement('div');
             rain.className = 'matrix-rain';
@@ -330,86 +397,146 @@
         els.btn.addEventListener('click', () => {
             const code = els.input.value.trim();
             if(!guests[code]) { els.error.textContent = "ACCESS DENIED"; return; }
-            
+            els.audio.play().catch(e => console.log("Audio issue: " + e));
             els.terminal.style.display = 'none';
-            els.anim.style.display = 'block';
-            
-            // Simulating Animation Duration
-            setTimeout(() => {
-                els.anim.style.display = 'none';
-                renderCard(guests[code]);
-            }, 2500);
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#D4AF37', '#ffffff', '#00FF41'], zIndex: 9999 });
+            renderCard(guests[code]);
         });
 
         function renderCard(guest) {
             const cardHTML = `
-                <div class="access-card" id="captureTarget">
-                    <div class="gold-dust"></div>
-                    <div class="gold-splash"></div>
+                <div class="card-float-wrapper" id="captureWrapper">
                     
-                    <div class="card-left">
-                        <div class="chip-sim">
-                            <div class="chip-line"></div><div class="chip-line"></div><div class="chip-line"></div>
-                        </div>
-                        <div class="card-photo-frame">
-                            <img src="${guest.image}" class="card-photo" crossorigin="anonymous">
-                        </div>
-                        <div class="card-name">${guest.name}</div>
-                        <div class="card-role">${guest.role}</div>
+                    <div class="cat-sitting">
+                        <img src="cat-sit.gif" alt="Please add cat-sit.gif to folder">
+                    </div>
+                    
+                    <div class="cat-peeping">
+                        <img src="cat-peep.png" alt="Peeping Cat" onerror="this.style.display='none'; this.parentElement.innerHTML='🐱';">
                     </div>
 
-                    <div class="card-right">
-                        <div class="card-invite-text">${guest.msg}</div>
-                        
-                        <div class="card-details-grid">
-                            <div class="cd-item"><i class="fas fa-calendar"></i> 23rd Feb</div>
-                            <div class="cd-item"><i class="fas fa-glass-cheers"></i> 26th Feb</div>
-                            <div class="cd-item"><i class="fas fa-clock"></i> 6:30 PM</div>
-                            <div class="cd-item"><i class="fas fa-map-marker-alt"></i> Petuk Rest.</div>
+                    <div class="access-card" id="captureTarget" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2">
+                        <div class="gold-dust"></div>
+                        <div class="gold-splash"></div>
+                        <div class="card-left">
+                            <div class="chip-sim"><div class="chip-line"></div><div class="chip-line"></div><div class="chip-line"></div></div>
+                            <div class="card-photo-frame"><img src="${guest.image}" class="card-photo" crossorigin="anonymous"></div>
+                            <div class="card-name">${guest.name}</div>
+                            <div class="card-role">${guest.role}</div>
                         </div>
-
-                        <div class="card-footer-id">
-                            ID: ${els.input.value.trim()} // VALID
+                        <div class="card-right">
+                            <div class="card-invite-text">${guest.msg}</div>
+                            <div class="card-details-grid">
+                                <div class="cd-item"><i class="fas fa-calendar"></i> 23rd Feb</div>
+                                <div class="cd-item"><i class="fas fa-glass-cheers"></i> 26th Feb</div>
+                                <div class="cd-item"><i class="fas fa-clock"></i> 6:30 PM</div>
+                                <div class="cd-item"><i class="fas fa-map-marker-alt"></i> Petuk Rest.</div>
+                            </div>
+                            <div class="card-footer-id">ID: ${els.input.value.trim()} // VALID</div>
                         </div>
                     </div>
                 </div>
             `;
             els.mount.innerHTML = cardHTML;
             els.profile.style.display = 'block';
+            VanillaTilt.init(document.querySelector(".access-card"));
         }
 
-        els.close.addEventListener('click', () => {
-            els.profile.style.display = 'none';
-            els.terminal.style.display = 'block';
-            els.input.value = '';
+        els.close.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            els.mainContainer.classList.add('shake-anim');
+            setTimeout(() => els.mainContainer.classList.remove('shake-anim'), 500);
+
+            const closeRect = els.close.getBoundingClientRect();
+            const saveRect = els.save.getBoundingClientRect();
+            const containerRect = els.profile.getBoundingClientRect();
+
+            const wrapper = document.getElementById('captureWrapper');
+            const wrapRect = wrapper.getBoundingClientRect();
+
+            const startX = closeRect.left - containerRect.left + (closeRect.width / 2);
+            const startY = closeRect.top - containerRect.top + (closeRect.height / 2);
+            
+            const endX = saveRect.left - containerRect.left + saveRect.width + 15; 
+            const endY = saveRect.top - containerRect.top + (saveRect.height / 2);
+
+            const rightEdge = wrapRect.right - containerRect.left + 100;
+
+            const cp1X = rightEdge; 
+            const cp1Y = startY + 50; 
+            const cp2X = rightEdge; 
+            const cp2Y = endY; 
+
+            const pathD = `M ${startX} ${startY} C ${cp1X} ${cp1Y}, ${cp2X} ${cp2Y}, ${endX} ${endY}`;
+            
+            els.arrowPath.setAttribute('d', pathD);
+            els.arrowPath.classList.remove('draw-path-dotted');
+            void els.arrowPath.offsetWidth; 
+            els.arrowPath.classList.add('draw-path-dotted');
         });
 
-        // DOWNLOAD
         els.save.addEventListener('click', () => {
-            const original = document.getElementById('captureTarget');
-            const clone = original.cloneNode(true);
             
-            // Flatten for Capture
-            clone.style.position = 'fixed'; clone.style.top = '0'; clone.style.zIndex = '-99';
-            clone.style.transform = 'none'; clone.style.animation = 'none';
-            clone.style.boxShadow = 'none';
-            clone.style.width = '1000px'; clone.style.height = 'auto'; clone.style.minHeight = '500px';
-            clone.style.flexDirection = 'row';
+            els.bouquetLayer.style.display = 'flex';
             
-            // Adjust Left Side for capture width
-            clone.querySelector('.card-left').style.width = '35%';
-            clone.querySelector('.card-left').style.borderRight = '1px solid rgba(212,175,55,0.3)';
-            clone.querySelector('.card-left').style.borderBottom = 'none';
+            els.flowerEmoji.classList.remove('bouquet-animate');
+            els.acceptText.classList.remove('accept-animate');
+            void els.flowerEmoji.offsetWidth; 
+            els.flowerEmoji.classList.add('bouquet-animate');
+            els.acceptText.classList.add('accept-animate');
 
-            document.body.appendChild(clone);
-
-            html2canvas(clone, { scale: 2, useCORS: true, backgroundColor: null }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = `VIP_ACCESS_${els.input.value.trim()}.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-                document.body.removeChild(clone);
+            confetti({ 
+                particleCount: 200, spread: 120, origin: { y: 0.5 }, 
+                colors: ['#FF69B4', '#FF1493', '#FFD700', '#32CD32', '#9370DB', '#FF4500'], 
+                zIndex: 10000, ticks: 300 
             });
+
+            const wrapper = document.getElementById('captureWrapper');
+            const target = document.getElementById('captureTarget');
+            
+            const origWrapperAnim = wrapper.style.animation;
+            const origTransform = target.style.transform;
+            const origBoxShadow = target.style.boxShadow;
+            const origBackground = target.style.background;
+            
+            wrapper.style.animation = 'none'; 
+            if(target.vanillaTilt) target.vanillaTilt.destroy();
+            target.style.transform = 'none';
+            target.style.boxShadow = '0 0 0 2px #D4AF37'; 
+            target.style.background = '#111111'; 
+
+            const dust = target.querySelector('.gold-dust');
+            const splash = target.querySelector('.gold-splash');
+            const origDustDisplay = dust ? dust.style.display : '';
+            const origSplashDisplay = splash ? splash.style.display : '';
+            if (dust) dust.style.display = 'none';
+            if (splash) splash.style.display = 'none';
+
+            setTimeout(() => {
+                html2canvas(wrapper, { 
+                    scale: 3, 
+                    useCORS: true, 
+                    backgroundColor: null 
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = `VIP_ACCESS_${els.input.value.trim()}.png`;
+                    link.href = canvas.toDataURL('image/png', 1.0);
+                    link.click();
+                    
+                    wrapper.style.animation = origWrapperAnim;
+                    target.style.transform = origTransform;
+                    target.style.boxShadow = origBoxShadow;
+                    target.style.background = origBackground;
+                    if (dust) dust.style.display = origDustDisplay;
+                    if (splash) splash.style.display = origSplashDisplay;
+                    VanillaTilt.init(target); 
+                });
+            }, 100);
+
+            setTimeout(() => {
+                els.bouquetLayer.style.display = 'none';
+            }, 4000);
         });
     </script>
 </body>
