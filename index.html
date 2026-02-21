@@ -362,10 +362,10 @@
 
     <script>
         const guests = {
-            "ECE/23/14": { name: "Sohima De", role: "MY MALKIN 👑", image: "sohi.jpeg", msg: " Hello <span class='highlight'>Love</span>, As my birthday approaches, there's no one I'd rather celebrate with than you. You bring so much joy and happiness into my life, and having you by my side on this special day would mean the world to me. You make ordinary moments extraordinary, and I know with you there, my birthday will be truly special. I've planned a cozy celebration with our close friends, and I really want you to join us. Your smile is what I'm looking forward to the most!"},
-            "ECE/23/17": { name: "Sourav Ghosh", role: "VIP-INSAAN", image: "SOURAV.jpg", msg: "Hey <span class='highlight'>Sourav</span>, What's up bro! Hope everything's fine </p><p>I'm throwing a birthday bash soon and it wouldn't be the same without you there. Celebrating this day with you would make it even more special.It's going to be a chill evening with good food, great music, and even better company. Wouldn't be the same without you, BADE-INSAAN"},
-            "CSE/23/185": { name: "Arnabi Mandal", role: "VIP-ANAROBIA", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80", msg: "Hey <span class='highlight'>Arnabi</span>, I'm having a birthday get-together. It's going to be a fun evening with some food and company.Nothing too fancy, just a casual gathering with friends. I think it'll be a nice time and I hope you can make it."},
-            "ME/23/12": { name: "Suchana Jana", role: "VIP-RAMEN", image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80", msg: "Hey <span class='highlight'>Maggie</span>, I'm planning a birthday celebration. It's going to be casual and low-key, just the way we like it. Hope you can make it and we can catch up properly!" }
+            "ECE/23/14": { name: "Sohima De", role: "MY MALKIN 👑", image: "sohi.jpeg", downloadPath: "sohicard.png", msg: " Hello <span class='highlight'>Love</span>, As my birthday approaches, there's no one I'd rather celebrate with than you. You bring so much joy and happiness into my life, and having you by my side on this special day would mean the world to me. You make ordinary moments extraordinary, and I know with you there, my birthday will be truly special. I've planned a cozy celebration with our close friends, and I really want you to join us. Your smile is what I'm looking forward to the most!"},
+            "ECE/23/17": { name: "Sourav Ghosh", role: "VIP-INSAAN", image: "SOURAV.jpg", downloadPath: "souravcard.png", msg: "Hey <span class='highlight'>Sourav</span>, What's up bro! Hope everything's fine </p><p>I'm throwing a birthday bash soon and it wouldn't be the same without you there. Celebrating this day with you would make it even more special.It's going to be a chill evening with good food, great music, and even better company. Wouldn't be the same without you, BADE-INSAAN"},
+            "CSE/23/185": { name: "Arnabi Mandal", role: "VIP-ANAROBIA", image: "arnabi.jpeg", downloadPath: "ARNABI CARD.png", msg: "Hey <span class='highlight'>Arnabi</span>, I'm having a birthday get-together. It's going to be a fun evening with some food and company.Nothing too fancy, just a casual gathering with friends. I think it'll be a nice time and I hope you can make it."},
+            "ME/23/12": { name: "Suchana Jana", role: "VIP-RAMEN", image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80", downloadPath: "suchanacard.png", msg: "Hey <span class='highlight'>Maggie</span>, I'm planning a birthday celebration. It's going to be casual and low-key, just the way we like it. Hope you can make it and we can catch up properly!" }
         };
 
         const els = {
@@ -477,67 +477,45 @@
         });
 
         els.save.addEventListener('click', () => {
-            
-            els.bouquetLayer.style.display = 'flex';
-            
-            els.flowerEmoji.classList.remove('bouquet-animate');
-            els.acceptText.classList.remove('accept-animate');
-            void els.flowerEmoji.offsetWidth; 
-            els.flowerEmoji.classList.add('bouquet-animate');
-            els.acceptText.classList.add('accept-animate');
+    const code = els.input.value.trim();
+    const guest = guests[code];
 
-            confetti({ 
-                particleCount: 200, spread: 120, origin: { y: 0.5 }, 
-                colors: ['#FF69B4', '#FF1493', '#FFD700', '#32CD32', '#9370DB', '#FF4500'], 
-                zIndex: 10000, ticks: 300 
-            });
+    if (!guest || !guest.downloadPath) {
+        console.error("Download file not defined for this user.");
+        return;
+    }
 
-            const wrapper = document.getElementById('captureWrapper');
-            const target = document.getElementById('captureTarget');
-            
-            const origWrapperAnim = wrapper.style.animation;
-            const origTransform = target.style.transform;
-            const origBoxShadow = target.style.boxShadow;
-            const origBackground = target.style.background;
-            
-            wrapper.style.animation = 'none'; 
-            if(target.vanillaTilt) target.vanillaTilt.destroy();
-            target.style.transform = 'none';
-            target.style.boxShadow = '0 0 0 2px #D4AF37'; 
-            target.style.background = '#111111'; 
+    // --- 1. SHOW THE ANIMATION OVERLAY ---
+    els.bouquetLayer.style.display = 'flex';
+    els.flowerEmoji.classList.remove('bouquet-animate');
+    els.acceptText.classList.remove('accept-animate');
+    void els.flowerEmoji.offsetWidth; // Trigger reflow
+    els.flowerEmoji.classList.add('bouquet-animate');
+    els.acceptText.classList.add('accept-animate');
 
-            const dust = target.querySelector('.gold-dust');
-            const splash = target.querySelector('.gold-splash');
-            const origDustDisplay = dust ? dust.style.display : '';
-            const origSplashDisplay = splash ? splash.style.display : '';
-            if (dust) dust.style.display = 'none';
-            if (splash) splash.style.display = 'none';
+    // --- 2. FIRE CONFETTI ---
+    confetti({ 
+        particleCount: 200, 
+        spread: 120, 
+        origin: { y: 0.5 }, 
+        colors: ['#FF69B4', '#FF1493', '#FFD700', '#32CD32', '#9370DB', '#FF4500'], 
+        zIndex: 10000 
+    });
 
-            setTimeout(() => {
-                html2canvas(wrapper, { 
-                    scale: 3, 
-                    useCORS: true, 
-                    backgroundColor: null 
-                }).then(canvas => {
-                    const link = document.createElement('a');
-                    link.download = `VIP_ACCESS_${els.input.value.trim()}.png`;
-                    link.href = canvas.toDataURL('image/png', 1.0);
-                    link.click();
-                    
-                    wrapper.style.animation = origWrapperAnim;
-                    target.style.transform = origTransform;
-                    target.style.boxShadow = origBoxShadow;
-                    target.style.background = origBackground;
-                    if (dust) dust.style.display = origDustDisplay;
-                    if (splash) splash.style.display = origSplashDisplay;
-                    VanillaTilt.init(target); 
-                });
-            }, 100);
+    // --- 3. TRIGGER THE ACTUAL FILE DOWNLOAD ---
+    // We create a hidden link and click it programmatically
+    const downloadLink = document.createElement('a');
+    downloadLink.href = guest.downloadPath; 
+    downloadLink.download = `VIP_ACCESS_${guest.name.replace(/\s+/g, '_')}.png`;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
 
-            setTimeout(() => {
-                els.bouquetLayer.style.display = 'none';
-            }, 4000);
-        });
+    // --- 4. HIDE OVERLAY AFTER 4 SECONDS ---
+    setTimeout(() => {
+        els.bouquetLayer.style.display = 'none';
+    }, 4000);
+});
     </script>
 </body>
 </html>
